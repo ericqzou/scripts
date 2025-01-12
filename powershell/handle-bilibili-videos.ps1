@@ -22,12 +22,12 @@ function remove_file_padding_bytes ($dir) {
             $base_name = $item.Basename
             $file_dir = $item.DirectoryName
             $new_name = "$file_dir\$base_name-new$oldExtension"
-            
+
             "Found $full_name , open and set read offset"
             $in_stream = [File]::Open($full_name, [FileMode]::Open, [FileAccess]::Read)
             $in_stream.Seek(9, [SeekOrigin]::Begin)
             "Done.`n"
-            
+
             "Copy bytes to $new_name"
             $out_stream = [File]::Open($new_name, [FileMode]::Create, [FileAccess]::Write)
             $in_stream.CopyTo($out_stream)
@@ -88,13 +88,13 @@ function compare_and_rename ($files) {
         Rename-Item -Path $file_0.FullName -NewName $new_mp4
         Rename-Item -Path $file_1.FullName -NewName $new_mp3
         "Done."
-        
+
 
     }
     else {
         $new_mp4 = $file_1.basename + $newExtensionVideo
         $new_mp3 = $file_0.basename + $newExtensionAudio
-        
+
         "Renaming..."
         Rename-Item -Path $file_1.FullName -NewName $new_mp4
         Rename-Item -Path $file_0.FullName -NewName $new_mp3
@@ -151,7 +151,7 @@ function rename_files {
 
     "Working in dirctory: $dir"
 
-    if ($prefix) {$prefix = $prefix + "-" + $dir.Split("\")[-1]} else {$prefix += $dir.Split("\")[-1]} 
+    if ($prefix) {$prefix = $prefix + "-" + $dir.Split("\")[-1]} else {$prefix += $dir.Split("\")[-1]}
 
     $sub_dirs = Get-ChildItem -Path $dir -Directory
     if (! $sub_dirs) {
@@ -169,7 +169,7 @@ function rename_files {
 
 }
 
-$final_dir = "C:\Users\NoBody\Videos"
+$final_dir = "$HOME\Videos"
 
 function move_files_to_final_destination ($dir) {
     $items = Get-ChildItem -Path $dir -Recurse
@@ -181,8 +181,13 @@ function move_files_to_final_destination ($dir) {
 }
 
 
-##### remove_file_padding_bytes $startDir
-##### rename_extensions $startDir
-##### merge_files $startDir
-##### rename_files $startDir ""
-##### move_files_to_final_destination $startDir
+function delete_handled_directories ($dir) {
+    Get-ChildItem -Path $dir -Directory | foreach {Remove-Item $_.fullname -Recurse -Force}
+}
+
+# remove_file_padding_bytes $startDir
+# rename_extensions $startDir
+# merge_files $startDir
+# rename_files $startDir ""
+# move_files_to_final_destination $startDir
+# delete_handled_directories $startDir
